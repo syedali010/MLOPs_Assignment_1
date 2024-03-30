@@ -20,7 +20,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials1', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
                     echo "Logging in to Docker Hub"
-                    bat "docker login --username %DOCKER_HUB_USERNAME% --password-stdin %DOCKER_HUB_PASSWORD%"
+                    bat "docker login --username %DOCKER_HUB_USERNAME% --password %DOCKER_HUB_PASSWORD%"
                     bat "docker push %DOCKER_IMAGE_NAME%"
                 }
             }
