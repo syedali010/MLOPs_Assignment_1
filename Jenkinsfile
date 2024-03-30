@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE_NAME = 'mlops-back:v2'
+        DOCKER_IMAGE_NAME = 'syedali4/mlops-back:v2'
     }
 
     stages {
