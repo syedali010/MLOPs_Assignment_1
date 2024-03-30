@@ -4,6 +4,9 @@ pipeline {
     environment {
         // Set your Docker image name here
         DOCKER_IMAGE_NAME = 'syedali4/myapp-backend:v1'
+        // Hardcoded Docker Hub username and password
+        DOCKER_HUB_USERNAME = 'syedali4'
+        DOCKER_HUB_PASSWORD = 'ipHone090Dockerhub'
     }
 
     stages {
