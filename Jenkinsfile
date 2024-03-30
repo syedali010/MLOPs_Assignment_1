@@ -30,7 +30,7 @@ pipeline {
         stage('Notification') {
             steps {
                 // Add steps for sending email notification
-                mail to: 'your-email@example.com', // Update with your email address
+                mail to: 'maryamkhalid590@gmail.com', // Update with your email address
                      subject: "Pipeline Success: ${env.JOB_NAME}",
                      body: "The pipeline ${env.JOB_NAME} has been successfully executed.\nBuild Number: ${env.BUILD_NUMBER}\nBuild URL: ${env.BUILD_URL}"
             }
