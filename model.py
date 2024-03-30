@@ -2,8 +2,9 @@ import pandas as pd
 from sklearn.cluster import KMeans
 import joblib
 import os
-os.environ['LOKY_MAX_CPU_COUNT'] = '4'  # Adjust the number of cores accordingly.
 
+# Adjust the number of cores accordingly
+os.environ['LOKY_MAX_CPU_COUNT'] = '4'
 
 # Load dataset
 data = pd.read_csv('Customer_Segmentation.csv')

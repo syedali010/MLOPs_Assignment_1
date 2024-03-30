@@ -4,9 +4,12 @@ import joblib
 app = Flask(__name__)
 
 # Load the trained model
-model = joblib.load('customer_segmentation_model.pkl')
+model = joblib.load(
+    'customer_segmentation_model.pkl'
+)
 
 
+# Two blank lines before the function
 @app.route('/', methods=['GET', 'POST'])
 def predict():
     if request.method == 'POST':
@@ -20,20 +23,17 @@ def predict():
         gender_numeric = 1 if gender.lower() == 'male' else 0
 
         # Make prediction using the loaded model
-        features = [
-            gender_numeric, age, annual_income, spending_score
-        ]
+        features = [gender_numeric, age, annual_income, spending_score]
+
+        # Breaking the long line
         prediction = model.predict([features])
 
-        # Render the prediction result template with the prediction
-        return render_template(
-            'result.html', prediction=prediction[0]
-        )
+        # Removed trailing whitespace from the blank lines
+        return render_template('result.html', prediction=prediction[0])
 
     # Render the input form template
     return render_template('predict.html')
 
 
 if __name__ == '__main__':
-    # Run the Flask app
     app.run(port=8081, host="0.0.0.0")
