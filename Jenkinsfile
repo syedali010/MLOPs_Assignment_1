@@ -2,44 +2,46 @@ pipeline {
     agent any
 
     environment {
-        // Set your Docker image name here
-        DOCKER_IMAGE_NAME = 'syedali4/myapp-backend:v1'
-        // Hardcoded Docker Hub username and password
-        DOCKER_HUB_USERNAME = 'syedali4'
-        DOCKER_HUB_PASSWORD = 'ipHone090Dockerhub'
+        DOCKER_IMAGE_NAME = 'mlops-back:v2'
     }
 
-     stages {
+    stages {
         stage('Build Docker Image') {
             steps {
-                // Build the Docker image with the specified tag
-                bat "docker build -t %DOCKER_IMAGE_NAME% ."
+                script {
+                    sh "docker build -t $DOCKER_IMAGE_NAME ."
+                }
             }
         }
-        
-        stage('Login Dockerhub and Push Docker Image') {
+
+        stage('Login Dockerhub abd Push Docker Image') {
+            environment {
+                DOCKER_HUB_CREDENTIALS = credentials('dockerhub-credentials')
+            }
             steps {
-                echo "Logging in to Docker Hub"
-                bat "echo %DOCKER_HUB_PASSWORD% | docker login -u %DOCKER_HUB_USERNAME% --password-stdin"
-                bat "docker push %DOCKER_IMAGE_NAME%"
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
+                        sh "echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin"
+
+                        sh "docker push $DOCKER_IMAGE_NAME"
+                    }
+                }
             }
         }
     }
 
     post {
         always {
-            // Clean up Docker images using Windows batch command
-            bat "docker system prune -af"
+            // Clean up Docker images
+            sh 'docker system prune -af'
         }
         success {
             echo 'Pipeline Success'
-            // Sending email notification. Configure the 'mail' step according to your Jenkins email setup
-            echo 'Email notification for successful build would be sent here.'
+            mail bcc: '', body: "<br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL de build: ${env.BUILD_URL}", cc: '', charset: 'UTF-8', from: '', mimeType: 'text/html', replyTo: '', subject: "Success CI: Project name -> ${env.JOB_NAME}", to: "umar.waseem@gmail.com";
         }
         failure {
             echo 'Pipeline Failed'
-            // Sending email notification. Configure the 'mail' step according to your Jenkins email setup
-            echo 'Email notification for failed build would be sent here.'
+            mail bcc: '', body: "<br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL de build: ${env.BUILD_URL}", cc: '', charset: 'UTF-8', from: '', mimeType: 'text/html', replyTo: '', subject: "ERROR CI: Project name -> ${env.JOB_NAME}", to: "umar.waseem@gmail.com";
         }
     }
 }
