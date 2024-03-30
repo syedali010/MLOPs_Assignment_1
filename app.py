@@ -20,10 +20,15 @@ def predict():
         gender_numeric = 1 if gender.lower() == 'male' else 0
 
         # Make prediction using the loaded model
-        prediction = model.predict([[gender_numeric, age, annual_income, spending_score]])
+        features = [
+            gender_numeric, age, annual_income, spending_score
+        ]
+        prediction = model.predict([features])
 
         # Render the prediction result template with the prediction
-        return render_template('result.html', prediction=prediction[0])
+        return render_template(
+            'result.html', prediction=prediction[0]
+        )
 
     # Render the input form template
     return render_template('predict.html')
