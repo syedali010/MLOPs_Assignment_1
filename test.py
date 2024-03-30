@@ -3,11 +3,13 @@ import pandas as pd
 import joblib
 import numpy as np
 
+
 @pytest.fixture
 def trained_model():
     # Load the trained model from the file
     model = joblib.load('customer_segmentation_model.pkl')
     return model
+
 
 @pytest.fixture
 def test_data():
@@ -19,6 +21,7 @@ def test_data():
     columns = ['Gender', 'Age', 'Annual Income (k$)', 'Spending Score (1-100)']
     X_test = data[columns]
     return X_test
+
 
 def test_prediction(trained_model, test_data):
     model = trained_model
