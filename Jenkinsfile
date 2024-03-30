@@ -2,40 +2,48 @@ pipeline {
     agent any
 
     environment {
+        // Set your Docker image name here
         DOCKER_IMAGE_NAME = 'syedali4/myapp-backend:v1'
     }
 
     stages {
         stage('Build Docker Image') {
             steps {
-                script {
-                    sh "docker build -t $DOCKER_IMAGE_NAME ."
-                }
+                // Build the Docker image with the specified tag
+                bat "docker build -t %DOCKER_IMAGE_NAME% ."
             }
         }
 
-       stage('Push Docker Image to Docker Hub') {
+        stage('Login Dockerhub and Push Docker Image') {
+            environment {
+                // Your Docker Hub credentials ID
+                DOCKER_HUB_CREDENTIALS = credentials('123')
+            }
             steps {
-                // Log in to Docker Hub and push the image using the credentials stored in Jenkins.
-                withCredentials([usernamePassword(credentialsId: '123', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
-                    bat "echo %DOCKERHUB_PASSWORD% | docker login -u %DOCKERHUB_USERNAME% --password-stdin"
-                    bat "docker push ${env.DOCKER_IMAGE_NAME}"
+                withCredentials([usernamePassword(credentialsId: '123', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
+                    // Login to Docker Hub
+                    bat "echo %DOCKER_HUB_PASSWORD% | docker login -u %DOCKER_HUB_USERNAME% --password-stdin"
+                    // Push the Docker image
+                    bat "docker push %DOCKER_IMAGE_NAME%"
                 }
             }
         }
+    }
 
     post {
         always {
-            // Clean up Docker images
-            sh 'docker system prune -af'
+            // Clean up Docker images using Windows batch command
+            bat "docker system prune -af"
         }
         success {
             echo 'Pipeline Success'
-            mail bcc: '', body: "<br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL de build: ${env.BUILD_URL}", cc: '', charset: 'UTF-8', from: '', mimeType: 'text/html', replyTo: '', subject: "Success CI: Project name -> ${env.JOB_NAME}", to: "umar.waseem@gmail.com";
+            // Sending email notification. Configure the 'mail' step according to your Jenkins email setup
+            echo 'Email notification for successful build would be sent here.'
         }
         failure {
             echo 'Pipeline Failed'
-            mail bcc: '', body: "<br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL de build: ${env.BUILD_URL}", cc: '', charset: 'UTF-8', from: '', mimeType: 'text/html', replyTo: '', subject: "ERROR CI: Project name -> ${env.JOB_NAME}", to: "umar.waseem@gmail.com";
+            // Sending email notification. Configure the 'mail' step according to your Jenkins email setup
+            echo 'Email notification for failed build would be sent here.'
         }
     }
 }
