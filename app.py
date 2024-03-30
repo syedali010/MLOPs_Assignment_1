@@ -6,6 +6,7 @@ app = Flask(__name__)
 # Load the trained model
 model = joblib.load('customer_segmentation_model.pkl')
 
+
 @app.route('/', methods=['GET', 'POST'])
 def predict():
     if request.method == 'POST':
@@ -14,10 +15,10 @@ def predict():
         age = float(request.form['age'])
         annual_income = float(request.form['annual_income'])
         spending_score = float(request.form['spending_score'])
-        
+
         # Convert gender to numeric
         gender_numeric = 1 if gender.lower() == 'male' else 0
-        
+
         # Make prediction using the loaded model
         prediction = model.predict([[gender_numeric, age, annual_income, spending_score]])
 
