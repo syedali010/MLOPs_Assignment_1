@@ -4,10 +4,6 @@ import pandas as pd
 import joblib
 import numpy as np
 
-# Get the directory of this file to construct absolute path
-THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_FILE = os.path.join(THIS_DIR, 'Customer_segmentation.csv')
-
 
 @pytest.fixture
 def trained_model():
@@ -19,7 +15,7 @@ def trained_model():
 @pytest.fixture
 def test_data():
     """Fixture to load test data, converting gender to numeric."""
-    data = pd.read_csv(DATA_FILE)
+    data = pd.read_csv('Customer_segmentation.csv')
     data['Gender'] = data['Gender'].map({'Male': 1, 'Female': 0})
     columns = ['Gender', 'Age', 'Annual Income (k$)', 'Spending Score (1-100)']
     X_test = data[columns]
